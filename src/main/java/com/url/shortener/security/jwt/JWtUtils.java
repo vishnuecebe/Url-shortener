@@ -4,10 +4,13 @@ import java.security.Key;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import com.url.shortener.services.UserDetailsImpl;
 
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -38,10 +41,26 @@ public class JWtUtils {
                 .subject(username)
                 .claim("roles",roles)
                 .issuedAt(new Date())
-                .expiration(new Date((new Date().getTime() + 172800000)))
-                .signWith(null).compact();
+                .expiration(new Date((new Date().getTime() + jwtExpirationMs)))
+                .signWith(key()).compact();
+    }
+    public String getUserNameFromJwtToken(String Token){
+        return Jwts.parser()
+                .verifyWith((SecretKey) key())
+                .build().parseSignedClaims(Token)
+                .getPayload().getSubject();
     }
     private Key key(){
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(null));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+    }
+    public boolean validateToken(String authToken){
+        try{
+        Jwts.parser().verifyWith((SecretKey) key())
+        .build().parseSignedClaims(authToken);
+        }
+        catch(JwtException e){
+            return false;
+        }
+        return true;
     }
 }
