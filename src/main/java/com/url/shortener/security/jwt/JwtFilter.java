@@ -22,7 +22,7 @@ public class JwtFilter extends OncePerRequestFilter{
     
     @Autowired
     private UserDetailsService userDetailsService;
-
+    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -41,6 +41,7 @@ public class JwtFilter extends OncePerRequestFilter{
             }
             
         } catch (Exception e) {
+            System.out.println("Error with JWT Token");
             e.printStackTrace();
         }
 

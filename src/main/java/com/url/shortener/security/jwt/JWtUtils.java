@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.url.shortener.services.UserDetailsImpl;
 
@@ -15,7 +16,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
-
+@Component
 public class JWtUtils {
     //Authorization Header 
     // Bearer <TOKEN>
@@ -37,7 +38,7 @@ public class JWtUtils {
         String roles = userDetails.getAuthorities().stream()
         .map(authority -> authority.getAuthority())
         .collect(Collectors.joining(","));
-        return Jwts.builder()
+        return  Jwts.builder()
                 .subject(username)
                 .claim("roles",roles)
                 .issuedAt(new Date())
