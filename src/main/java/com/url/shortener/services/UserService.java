@@ -40,7 +40,7 @@ public class UserService {
         String jwt = jWtUtils.generateToken(userDetailsImpl);
         return new JwtAuthenticationResponse(jwt);
     }
-
+    
     public User findByUserName(String name){
         return userRepository.findByUsername(name).orElseThrow(()-> new UsernameNotFoundException("User not found with username: "+name));
     }
